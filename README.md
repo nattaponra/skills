@@ -1,4 +1,4 @@
-# projects — a Product-Owner-led team workflow for Claude Code
+# Product-Owner-led team workflow
 
 > A Claude Code plugin that turns a single agent into a coordinated software team. One **Product Owner** talks to you; six specialist subagents do the work and collaborate through **GitHub issues and pull requests**.
 
