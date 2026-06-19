@@ -1,0 +1,15 @@
+{
+  "name": "0xlabs-skills",
+  "description": "Local marketplace for 0xlabs Claude Code skills.",
+  "owner": {
+    "name": "artizno"
+  },
+  "plugins": [
+    {
+      "name": "projects",
+      "description": "Product-Owner-led team workflow: a Product Owner orchestrates specialist subagents (architect, designer, engineer, qa, reviewer, docs) that collaborate through GitHub issues and pull requests.",
+      "source": "./projects",
+      "category": "workflow"
+    }
+  ]
+}
