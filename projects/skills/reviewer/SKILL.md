@@ -19,7 +19,7 @@ Approve when the code **improves the overall health of the codebase**, even if i
 |-----------|-------|
 | **Correctness** | Logic, edge cases, error handling, race conditions, off-by-one |
 | **Design / architecture** | Fits the Architect's design and existing patterns; right seams; no needless complexity |
-| **Tests** | Cypress specs cover changed code across all four layers (E2E / component / a11y / unit); meaningful assertions; the full Cypress suite passes |
+| **Tests** | Cypress specs cover changed code across the three pillars (E2E / Component / Accessibility WCAG 2.1 AA, zero violations); meaningful assertions; the full Cypress suite passes |
 | **Security** | Input validation, authz/authn, secrets, injection, unsafe deserialization |
 | **Maintainability** | Naming, readability, comments where non-obvious, no dead code |
 | **Performance** | Obvious N+1s, unbounded work, needless allocations — only where it matters |

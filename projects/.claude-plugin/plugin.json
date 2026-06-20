@@ -1,5 +1,5 @@
 {
   "name": "projects",
   "description": "Product-Owner-led team workflow: a Product Owner orchestrates specialist subagents (architect, designer, engineer, qa, reviewer, docs) that collaborate through GitHub issues and pull requests.",
-  "version": "0.2.0"
+  "version": "0.3.0"
 }

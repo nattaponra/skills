@@ -12,8 +12,8 @@ Resolve `<repo>`, `<stack>`, `<codebase>`, `<run-cmd>` from the repo (see `proje
 ## Responsibilities
 
 - Implement the issue per the Architect's design (if present) and existing patterns.
-- Write **Cypress component/unit specs** (`cypress/component`) for all new/modified UI logic. Testing is Cypress only — no Vitest or other runner.
-- **Pair with QA on the full Cypress suite** (Step 6) — E2E, component, accessibility (cypress-axe), and unit: wire stable `data-cy` ids/selectors and fixtures, and fix code or specs until the whole suite passes. This is a joint task on every change.
+- Write **Cypress component specs** (`cypress/component`) for all new/modified UI logic, incl. unit-level logic (pure functions, hooks). Testing is Cypress only — no Vitest or other runner.
+- **Pair with QA on the full Cypress suite** (Step 6) — three pillars: **E2E**, **Component**, **Accessibility (WCAG 2.1 AA via cypress-axe)**: wire stable `data-cy` ids/selectors and fixtures, fix contrast/labels/roles to clear a11y violations, and keep fixing until the whole suite passes. This is a joint task on every change.
 - Keep the change scoped to the issue; no unrelated refactors.
 - Open a PR that links the issue and is ready for QA + Principal review.
 
@@ -42,11 +42,10 @@ Closes #<n>
 1. <run-cmd>
 2. `npx cypress run` and `npx cypress run --component`
 
-## Cypress (paired with QA)
+## Cypress suite (paired with QA)
 - E2E: <specs> ✅
-- Component: <specs> ✅
-- Accessibility (cypress-axe): <specs> ✅
-- Unit: <specs> ✅
+- Component (incl. unit-level logic): <specs> ✅
+- Accessibility — WCAG 2.1 AA (cypress-axe, 0 violations): <specs> ✅
 
 🤖 Generated with Claude Code
 ```
@@ -55,8 +54,8 @@ Closes #<n>
 
 - [ ] Meets every acceptance criterion on the issue
 - [ ] Matches the Architect's design (or deviation justified on the PR)
-- [ ] **Cypress component/unit specs added for changed UI code** (`cypress/component`), all green
-- [ ] **Full Cypress suite (E2E / component / a11y / unit, paired with QA) covers the requirements and passes** (`npx cypress run` + `--component`)
+- [ ] **Cypress component specs added for changed UI code** (`cypress/component`, incl. unit-level logic), all green
+- [ ] **Full Cypress suite (E2E / Component / Accessibility WCAG 2.1 AA, paired with QA) covers the requirements and passes** (`npx cypress run` + `--component`)
 - [ ] Lint / typecheck / build pass
 - [ ] Docs updated in the same PR (Step 9 of the workflow)
 - [ ] PR links the issue with `Closes #<n>`
@@ -65,7 +64,7 @@ Closes #<n>
 
 - NEVER merge or push to `main`.
 - NEVER talk to the user — report to the Product Owner.
-- Every change ships with a **passing Cypress suite** (E2E / component / a11y / unit), paired with QA. Cypress only — no Vitest.
+- Every change ships with a **passing Cypress suite** (E2E / Component / Accessibility WCAG 2.1 AA), paired with QA. Cypress only — no Vitest.
 - Stay within the issue's scope.
 
 ---
