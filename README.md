@@ -28,8 +28,8 @@ It is **project-agnostic**: stack, repo, and commands are resolved from the code
 | **`projects:product-owner`** | Product Owner *(entry point)* | ✅ | Clarify intent, confirm scope, create & orchestrate the issue, dispatch specialists, report back |
 | `projects:architect` | Software Architect | ❌ | Agree the technical approach for non-trivial work; post a design doc to the issue |
 | `projects:designer` | UX/UI Designer | ❌ | Produce UI mockups + maintain the design system |
-| `projects:engineer` | Software Engineer | ❌ | Implement the change with unit tests; open a branch and a PR |
-| `projects:qa` | Software QA Engineer | ❌ | Design test cases on the issue; run E2E + post results/screenshots |
+| `projects:engineer` | Software Engineer | ❌ | Implement the change + Cypress specs; pair with QA on the suite; open a branch and a PR |
+| `projects:qa` | Software QA Engineer | ❌ | Design test cases; lead the Cypress suite (E2E/component/a11y/unit) with the Engineer; post results |
 | `projects:reviewer` | Principal Software Engineer | ❌ | Authoritative code review (Google Eng Practices); final sign-off |
 | `projects:docs` | Technical Writer | ❌ | Keep the documentation set current; mandatory changelog every change |
 
@@ -49,8 +49,8 @@ flowchart TD
     Architect --> Issue["PO creates issue + QA writes test cases"]
     Designer --> Issue
     Confirm -->|straightforward| Issue
-    Issue --> Dev["Engineer · implement + tests → branch + PR"]
-    Dev --> E2E["QA · run E2E + screenshots → PR"]
+    Issue --> Dev["Engineer · implement + Cypress specs → branch + PR"]
+    Dev --> E2E["QA + Engineer · run Cypress suite<br/>(E2E/component/a11y/unit) → PR"]
     E2E -->|fail| Dev
     E2E -->|pass| Docs["Technical Writer · update docs + changelog"]
     Docs --> Review["Principal Engineer · review PR"]
@@ -146,7 +146,7 @@ The skills resolve project specifics at runtime from `CLAUDE.md`, `README.md`, t
 
 If a placeholder can't be determined, the Product Owner asks before proceeding.
 
-**Standardized tooling** (not placeholders — the team's fixed conventions): unit tests use **Vitest**, end-to-end tests use **Cypress**. QA and the Software Engineer pair on the Cypress suite for every change, and it must pass before the work is done.
+**Standardized tooling** (not a placeholder — the team's fixed convention): **Cypress is the only test tool**, covering the whole stack — **End-to-end**, **Component**, **Accessibility** (cypress-axe), and **frontend unit**. QA and the Software Engineer pair on the Cypress suite for every change, and it must pass before the work is done.
 
 ---
 

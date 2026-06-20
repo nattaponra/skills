@@ -21,8 +21,7 @@ This skill is **project-agnostic**. At the start of work, resolve these placehol
 | `<assignee>` | Ask the user, or the configured default |
 | `<stack>` | From the manifest / CLAUDE.md (language, framework, test runner) |
 | `<codebase>` | The local project root (current working directory) |
-| Unit test runner | **Vitest — the team standard for unit tests** (set up the project's Vitest config if absent) |
-| E2E tool | **Cypress — the team standard for E2E** (set up the project's Cypress harness if absent) |
+| Testing | **Cypress only — the entire test stack.** Four layers, all run with `npx cypress run`: End-to-end (`cypress/e2e`), Component (`cypress/component`), Accessibility (`cypress-axe` / `cy.checkA11y()`), and frontend unit (`cypress/component`). No other test runner. Set up the Cypress harness if absent. |
 | `<run-cmd>` | The dev/start command (e.g. `pnpm dev`, `npm start`, `make run`) |
 
 If any placeholder cannot be determined, **ask the user before proceeding**.
@@ -36,8 +35,8 @@ If any placeholder cannot be determined, **ask the user before proceeding**.
 | **Product Owner** (you) | `projects:product-owner` (this skill) | ✅ Yes — sole interface | Clarify intent, confirm scope, create & orchestrate the GitHub issue, dispatch specialists, report back, notify user to merge | 1, 2, 3, 4 (issue), 8 |
 | **Software Architect** (subagent) | `projects:architect` | ❌ No | Design the technical approach for non-trivial work; post a design doc as an issue comment | 3.5 |
 | **UX/UI Designer** (subagent) | `projects:designer` | ❌ No | Produce UI mockups + maintain the design system; post mockup to the issue | 3.6 |
-| **Software Engineer** (subagent) | `projects:engineer` | ❌ No | Implement code + unit tests; **pair with QA on Cypress E2E**; open a branch and a (draft) PR referencing the issue | 5, 6 (E2E), 9 |
-| **Software QA Engineer** (subagent) | `projects:qa` | ❌ No | Design test cases; **lead Cypress E2E jointly with the Engineer**; post results + artifacts | 4 (tests), 6 |
+| **Software Engineer** (subagent) | `projects:engineer` | ❌ No | Implement code + Cypress component/unit specs; **pair with QA on the full Cypress suite**; open a branch and a (draft) PR referencing the issue | 5, 6, 9 |
+| **Software QA Engineer** (subagent) | `projects:qa` | ❌ No | Design test cases; **lead the Cypress suite (E2E / component / a11y / unit) jointly with the Engineer**; post results + artifacts | 4 (tests), 6 |
 | **Principal Software Engineer** (subagent) | `projects:reviewer` | ❌ No | Authoritative code review (Google Eng Practices); final technical sign-off on the PR | 7 |
 | **Technical Writer** (subagent) | `projects:docs` | ❌ No | Own and maintain the documentation set; update affected docs in the same PR | 9 |
 
@@ -53,7 +52,7 @@ All coordination flows through the **issue** and the **pull request** — never 
 4. **Software QA Engineer** posts the test-case table as an issue comment.
 5. **Software Engineer** branches, implements, and opens a **PR** that links the issue (`Closes #N`).
 6. **Technical Writer** updates the affected docs **in the same PR**.
-7. **Software QA Engineer + Software Engineer** pair on Cypress E2E (matching the requirements), run it green, and post results + Cypress artifacts to the PR.
+7. **Software QA Engineer + Software Engineer** pair on the full Cypress suite (E2E / component / a11y / unit, matching the requirements), run it green, and post results + Cypress artifacts to the PR.
 8. **Principal Software Engineer** posts inline review comments on the PR and approves/requests changes.
 9. **Product Owner** reads the GitHub state, summarizes, and tells the user the PR is ready to merge.
 
@@ -86,7 +85,7 @@ Mark **Status: Resolved** (with a one-line note) once addressed.
 - **Date:** 2026-06-19
 - **Context:** Issue #42 / PR #45
 - **Observation:** PR opened with no tests for the error path.
-- **Suggestion:** Add unit tests for failure modes before requesting QA.
+- **Suggestion:** Add Cypress specs for failure modes before requesting review.
 - **Severity:** Minor | Major | Blocker
 - **Status:** Open
 - **Resolution:** _(filled by the receiving agent: what changed)_
@@ -123,7 +122,7 @@ flowchart TD
     UIWork -->|yes| Designer["UX/UI Designer ·<br/>3.6 mockup + design-system"]
     UIWork -->|no| Issue["PO creates issue +<br/>QA designs test cases"]
     Designer --> Issue
-    Issue --> Dev["Software Engineer · 5. implement<br/>(code + unit tests) → branch + PR"]
+    Issue --> Dev["Software Engineer · 5. implement<br/>(code + Cypress specs) → branch + PR"]
     Dev --> E2E["Software QA · 6. run E2E<br/>+ screenshots to PR/issue"]
     E2E --> Pass{Tests pass?}
     Pass -->|no| FB["QA → Engineer feedback"]
@@ -230,9 +229,9 @@ EOF
 
 **After creating the issue**, the Product Owner spawns a **Software QA Engineer** subagent:
 
-> **First invoke the `projects:qa` skill**, then act on it. You are a Software QA Engineer. Review this GitHub issue for the `<repo>` project (stack: `<stack>`). Design comprehensive test cases covering: (1) unit tests for backend/services, (2) unit tests for UI components, (3) E2E scenarios with Cypress. Be specific about inputs, expected outputs, edge cases, and event/data flows. Post the test cases as a comment on the issue (`gh issue comment`). Return them in English as a professional table with columns: ID | Test Case Name | Precondition | Steps | Expected Result | Priority. Issue URL: [issue URL].
+> **First invoke the `projects:qa` skill**, then act on it. You are a Software QA Engineer. Review this GitHub issue for the `<repo>` project (stack: `<stack>`). Testing is **Cypress only**. Design comprehensive test cases across the four Cypress layers: (1) End-to-end, (2) Component, (3) Accessibility (cypress-axe), (4) frontend unit. Be specific about inputs, expected outputs, edge cases, and event/data flows. Post the test cases as a comment on the issue (`gh issue comment`). Return them in English as a professional table with columns: ID | Test Case Name | Precondition | Steps | Expected Result | Priority. Issue URL: [issue URL].
 
-The QA subagent posts a mandatory test-case table (Backend unit / Frontend unit / E2E, with a Priority column) to the issue — see `projects:qa` for the exact format.
+The QA subagent posts a mandatory test-case table (E2E / Component / Accessibility / Unit, with a Priority column) to the issue — see `projects:qa` for the exact format.
 
 ### Step 5 — Implementation · *Software Engineer*
 
@@ -245,19 +244,19 @@ The QA subagent posts a mandatory test-case table (Backend unit / Frontend unit 
 
 The Product Owner spawns a **Software Engineer** subagent:
 
-> **First invoke the `projects:engineer` skill**, then act on it. You are a Software Engineer expert in `<stack>`. Implement the changes described in this GitHub issue for the `<repo>` project. Requirements: (1) Follow the existing patterns and the Architect's design on the issue (check CLAUDE.md/README for architecture). (2) Create a branch and write unit tests with Vitest for ALL new/modified backend code. (3) Write unit tests for ALL new/modified UI components. (4) Open a (draft) PR that links the issue with `Closes #<n>`. (5) Do NOT merge or push to main. Codebase: `<codebase>`. Issue: [issue URL]
+> **First invoke the `projects:engineer` skill**, then act on it. You are a Software Engineer expert in `<stack>`. Implement the changes described in this GitHub issue for the `<repo>` project. Testing is **Cypress only** — no Vitest or other runner. Requirements: (1) Follow the existing patterns and the Architect's design on the issue (check CLAUDE.md/README for architecture). (2) Create a branch and add **Cypress component/unit specs** (`cypress/component`) for new/modified UI logic, with stable `data-cy` selectors. (3) Pair with QA so the full Cypress suite (E2E / component / a11y / unit) covers the change and passes. (4) Open a (draft) PR that links the issue with `Closes #<n>`. (5) Do NOT merge or push to main. Codebase: `<codebase>`. Issue: [issue URL]
 
-Engineer delivers: implementation code · backend unit tests · frontend unit tests · a branch + draft PR · brief summary of changes.
+Engineer delivers: implementation code · Cypress component/unit specs · a branch + draft PR · brief summary of changes.
 
-### Step 6 — Cypress E2E Testing · *Software QA Engineer + Software Engineer (jointly)*
+### Step 6 — Cypress Testing · *Software QA Engineer + Software Engineer (jointly)*
 
-**E2E is a JOINT responsibility on every task.** QA and the Software Engineer **work together** to write Cypress E2E specs that cover the issue's acceptance criteria, and the suite **must run green before the task is done**. No task finishes with failing or missing E2E.
+**Testing is a JOINT responsibility on every task, using Cypress only.** QA and the Software Engineer **work together** on the full Cypress suite — **End-to-end, Component, Accessibility (cypress-axe), and frontend unit** — covering the issue's acceptance criteria, and it **must run green before the task is done**. No task finishes with a failing or missing Cypress suite.
 
 **Model:** Usually `sonnet` — use `opus` for complex flows.
 
 The Product Owner dispatches **QA (lead) and the Software Engineer (pairing)**:
 
-> **First invoke the `projects:qa` skill**, then act on it. You are the Software QA Engineer leading E2E for `<repo>`, **pairing with the Software Engineer**. Together, write **Cypress** E2E specs that map 1:1 to the issue's acceptance criteria and the test cases on the issue (the Engineer wires test ids/selectors and fixtures; QA authors the specs and assertions). Start the app (`<run-cmd>`), run `npx cypress run`, and capture screenshots/videos for each scenario. **Every spec must pass before the task is done.** If anything fails, pair with the Engineer to fix code or spec and re-run until green. Post the results table + Cypress artifacts as a comment on the PR. Issue: [issue URL]. PR: [PR URL]. Codebase: `<codebase>`
+> **First invoke the `projects:qa` skill**, then act on it. You are the Software QA Engineer leading Cypress testing for `<repo>`, **pairing with the Software Engineer**. Testing is **Cypress only**. Together, write Cypress specs across all four layers — **E2E (`cypress/e2e`), Component (`cypress/component`), Accessibility (`cy.checkA11y()` via cypress-axe), and frontend unit** — mapping 1:1 to the issue's acceptance criteria and test cases (the Engineer wires `data-cy` ids/selectors and fixtures; QA authors specs and assertions). Start the app (`<run-cmd>`), run `npx cypress run` (e2e) and `npx cypress run --component`, and capture screenshots/videos. **Every spec must pass before the task is done.** If anything fails, pair with the Engineer to fix code or spec and re-run until green. Post the results table + Cypress artifacts as a comment on the PR. Issue: [issue URL]. PR: [PR URL]. Codebase: `<codebase>`
 
 **Feedback loop (via GitHub):**
 - A spec fails → QA + Engineer pair on the fix on the same branch → re-run `npx cypress run`.
@@ -314,14 +313,14 @@ The Technical Writer owns the full documentation set and templates — see `proj
 | Product Owner NEVER writes code / designs / reviews directly | Always delegate to the right specialist subagent |
 | All coordination flows through GitHub issue + PR | Traceable, in-sync collaboration — not chat relay |
 | NEVER merge PR as agent | User must control all merges to main |
-| ALWAYS include unit tests | Both frontend AND backend, every change |
+| ALWAYS include Cypress tests | E2E + component + a11y + unit, every change (Cypress only) |
 | ALWAYS include E2E screenshots in the PR/issue | Visual evidence is required |
 | ALWAYS confirm with user before implementing | No surprises; user approved scope |
 | ALWAYS write docs BEFORE review | Docs reviewed together with code |
 | NEVER skip the QA subagent | Always spawn QA for test design AND E2E execution |
-| E2E uses Cypress, written to match the requirements | QA + Engineer pair on it on every task |
-| ALL Cypress E2E must pass before a task is done | Hard gate — no green suite, no finish |
-| Cypress E2E results + artifacts attached to the PR | Evidence the suite ran and passed |
+| Testing is Cypress only, written to match the requirements | QA + Engineer pair on it on every task |
+| ALL Cypress specs (E2E/component/a11y/unit) must pass before done | Hard gate — no green suite, no finish |
+| Cypress results + artifacts attached to the PR | Evidence the suite ran and passed |
 | Non-trivial work MUST have an Architect design | No big build without an agreed approach |
 | UI changes MUST have a UX Designer + mockup | No UI work without design review |
 | Docs updated by the Technical Writer in the SAME PR | Documentation never drifts from the code |
@@ -342,7 +341,7 @@ The Technical Writer owns the full documentation set and templates — see `proj
 | Skipping the QA subagent | Always spawn QA for both test design AND E2E |
 | Skipping the Architect on a big change | Spawn the Architect to agree the approach first |
 | Merging without user confirmation | Post notification, wait for user action |
-| Missing unit tests | Every PR must include tests for changed code |
+| Missing Cypress tests | Every PR includes Cypress specs (E2E/component/a11y/unit) for changed code |
 | Creating PR-review before E2E passes | E2E must pass before Principal review |
 | Skipping documentation | Docs are part of DoD — update technical docs every change |
 | Using opus for simple tasks | Use haiku/sonnet for simple tasks to save cost |

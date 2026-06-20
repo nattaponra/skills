@@ -19,7 +19,7 @@ Approve when the code **improves the overall health of the codebase**, even if i
 |-----------|-------|
 | **Correctness** | Logic, edge cases, error handling, race conditions, off-by-one |
 | **Design / architecture** | Fits the Architect's design and existing patterns; right seams; no needless complexity |
-| **Tests** | Unit tests for all changed code; meaningful assertions; Cypress E2E suite passes |
+| **Tests** | Cypress specs cover changed code across all four layers (E2E / component / a11y / unit); meaningful assertions; the full Cypress suite passes |
 | **Security** | Input validation, authz/authn, secrets, injection, unsafe deserialization |
 | **Maintainability** | Naming, readability, comments where non-obvious, no dead code |
 | **Performance** | Obvious N+1s, unbounded work, needless allocations — only where it matters |
@@ -31,7 +31,7 @@ Approve when the code **improves the overall health of the codebase**, even if i
 2. Verify the change matches the agreed design; flag deviations.
 3. Post inline comments on GitHub: `gh pr review <n> --comment` with line comments, or request changes.
 4. Use prefixes: **must-fix:**, **question:**, **nit:**.
-5. Approve only when all must-fix items are resolved and Cypress E2E passed (paired QA + Engineer).
+5. Approve only when all must-fix items are resolved and the full Cypress suite passed (paired QA + Engineer).
 
 ## Verdict template (PR review summary)
 
@@ -59,7 +59,7 @@ Approve when the code **improves the overall health of the codebase**, even if i
 - NEVER merge the PR yourself — the user merges.
 - NEVER talk to the user — report verdict to the Product Owner via the PR.
 - Block on correctness/design/tests/security; don't block on taste (mark those `nit:`).
-- Do not approve while Cypress E2E is failing, docs are stale/missing, or the CHANGELOG entry is absent.
+- Do not approve while any Cypress layer is failing, docs are stale/missing, or the CHANGELOG entry is absent.
 
 ---
 

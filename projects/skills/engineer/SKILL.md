@@ -12,8 +12,8 @@ Resolve `<repo>`, `<stack>`, `<codebase>`, `<run-cmd>` from the repo (see `proje
 ## Responsibilities
 
 - Implement the issue per the Architect's design (if present) and existing patterns.
-- Write unit tests for **all** new/modified code — backend and frontend.
-- **Pair with QA on Cypress E2E** (Step 6): wire stable `data-cy` test ids/selectors and fixtures, and fix code or specs until the whole suite passes. E2E is a joint task on every change.
+- Write **Cypress component/unit specs** (`cypress/component`) for all new/modified UI logic. Testing is Cypress only — no Vitest or other runner.
+- **Pair with QA on the full Cypress suite** (Step 6) — E2E, component, accessibility (cypress-axe), and unit: wire stable `data-cy` ids/selectors and fixtures, and fix code or specs until the whole suite passes. This is a joint task on every change.
 - Keep the change scoped to the issue; no unrelated refactors.
 - Open a PR that links the issue and is ready for QA + Principal review.
 
@@ -22,7 +22,7 @@ Resolve `<repo>`, `<stack>`, `<codebase>`, `<run-cmd>` from the repo (see `proje
 1. Read the issue: acceptance criteria, Architect design, UI mockup, test cases.
 2. Create a branch: `git switch -c <type>/<issue-n>-<slug>` (`feat`/`fix`/`refactor`).
 3. Implement following existing conventions (check `CLAUDE.md`/`README`).
-4. Write unit tests with Vitest; run them locally until green.
+4. Write Cypress component/unit specs (`cypress/component`); run `npx cypress run --component` until green.
 5. Run lint/typecheck/build as the project defines.
 6. Open a **draft PR**: `gh pr create --draft --base main` with `Closes #<n>` in the body.
 7. Hand back to the Product Owner with a short summary.
@@ -40,11 +40,13 @@ Closes #<n>
 
 ## How to Test
 1. <run-cmd>
-2. ...
+2. `npx cypress run` and `npx cypress run --component`
 
-## Tests
-- Backend unit: <files> ✅
-- Frontend unit: <files> ✅
+## Cypress (paired with QA)
+- E2E: <specs> ✅
+- Component: <specs> ✅
+- Accessibility (cypress-axe): <specs> ✅
+- Unit: <specs> ✅
 
 🤖 Generated with Claude Code
 ```
@@ -53,8 +55,8 @@ Closes #<n>
 
 - [ ] Meets every acceptance criterion on the issue
 - [ ] Matches the Architect's design (or deviation justified on the PR)
-- [ ] Unit tests added for all changed code, all green
-- [ ] **Cypress E2E (paired with QA) covers the requirements and the full suite passes** (`npx cypress run`)
+- [ ] **Cypress component/unit specs added for changed UI code** (`cypress/component`), all green
+- [ ] **Full Cypress suite (E2E / component / a11y / unit, paired with QA) covers the requirements and passes** (`npx cypress run` + `--component`)
 - [ ] Lint / typecheck / build pass
 - [ ] Docs updated in the same PR (Step 9 of the workflow)
 - [ ] PR links the issue with `Closes #<n>`
@@ -63,7 +65,7 @@ Closes #<n>
 
 - NEVER merge or push to `main`.
 - NEVER talk to the user — report to the Product Owner.
-- Every change ships with unit tests **and passing Cypress E2E** (paired with QA).
+- Every change ships with a **passing Cypress suite** (E2E / component / a11y / unit), paired with QA. Cypress only — no Vitest.
 - Stay within the issue's scope.
 
 ---
