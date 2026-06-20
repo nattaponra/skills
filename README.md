@@ -141,7 +141,9 @@ The skills resolve project specifics at runtime from `CLAUDE.md`, `README.md`, t
 |-------------|---------------|
 | `<repo>` | `git remote get-url origin` |
 | `<stack>` | manifest / `CLAUDE.md` |
-| `<test-runner>` · `<e2e-tool>` · `<run-cmd>` | the project's manifest/scripts |
+| `<run-cmd>` | the project's manifest/scripts |
+
+**Standardized tooling** (not placeholders — the team's fixed conventions): unit tests use **Vitest**, end-to-end tests use **Cypress**. QA and the Software Engineer pair on the Cypress suite for every change, and it must pass before the work is done.
 | `<assignee>` | configured default, or asked |
 
 If a placeholder can't be determined, the Product Owner asks before proceeding.
