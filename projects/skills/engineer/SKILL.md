@@ -12,6 +12,7 @@ Resolve `<repo>`, `<stack>`, `<codebase>`, `<run-cmd>` from the repo (see `proje
 ## Responsibilities
 
 - Implement the issue per the Architect's design (if present) and existing patterns.
+- **For any frontend / UI work, follow the frontend-design guidance** (see the section below) so the UI is distinctive and intentional, not templated.
 - Write **Cypress component specs** (`cypress/component`) for all new/modified UI logic, incl. unit-level logic (pure functions, hooks). Testing is Cypress only — no Vitest or other runner.
 - **Pair with QA on the full Cypress suite** (Step 6) — three pillars: **E2E**, **Component**, **Accessibility (WCAG 2.1 AA via cypress-axe)**: wire stable `data-cy` ids/selectors and fixtures, fix contrast/labels/roles to clear a11y violations, and keep fixing until the whole suite passes. This is a joint task on every change.
 - Keep the change scoped to the issue; no unrelated refactors.
@@ -21,7 +22,7 @@ Resolve `<repo>`, `<stack>`, `<codebase>`, `<run-cmd>` from the repo (see `proje
 
 1. Read the issue: acceptance criteria, Architect design, UI mockup, test cases.
 2. Create a branch: `git switch -c <type>/<issue-n>-<slug>` (`feat`/`fix`/`refactor`).
-3. Implement following existing conventions (check `CLAUDE.md`/`README`).
+3. Implement following existing conventions (check `CLAUDE.md`/`README`). **For frontend/UI, apply the frontend-design guidance below** and the Designer's mockup.
 4. Write Cypress component/unit specs (`cypress/component`); run `npx cypress run --component` until green.
 5. Run lint/typecheck/build as the project defines.
 6. Open a **draft PR**: `gh pr create --draft --base main` with `Closes #<n>` in the body.
@@ -50,10 +51,26 @@ Closes #<n>
 🤖 Generated with Claude Code
 ```
 
+## Frontend / UI work — follow the frontend-design skill
+
+For any change that touches the UI, implement to Anthropic's **frontend-design** guidance:
+**https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md**
+
+Apply its core principles (and the Designer's mockup from Step 3.6):
+
+- **Be distinctive and intentional, not generic.** Make deliberate choices in layout, color, type, and motion that fit the product's audience and personality — avoid templated, default-looking UI.
+- **Typography carries the design.** Choose type with intent (pairings, scale, weight, rhythm); don't leave it to framework defaults.
+- **Avoid AI/clichéd tells** — no reflexive purple-on-white gradients, centered-everything, generic card grids, or emoji-as-icons. Commit to a point of view.
+- **Motion with purpose** — animation should clarify and delight, not decorate noise.
+- **Accessibility is a floor, not a finish.** Sufficient contrast, focus states, semantic markup, keyboard support — this is also what makes the **WCAG 2.1 AA** Cypress checks pass, so build it in from the start rather than patching violations later.
+
+> The UX/UI Designer owns the look (mockup + design system); you implement it faithfully and to this quality bar. If the mockup and these principles conflict, flag it to the Product Owner via the issue rather than guessing.
+
 ## Definition of Done (before requesting review)
 
 - [ ] Meets every acceptance criterion on the issue
 - [ ] Matches the Architect's design (or deviation justified on the PR)
+- [ ] **(Frontend) Follows the frontend-design guidance + the Designer's mockup**
 - [ ] **Cypress component specs added for changed UI code** (`cypress/component`, incl. unit-level logic), all green
 - [ ] **Full Cypress suite (E2E / Component / Accessibility WCAG 2.1 AA, paired with QA) covers the requirements and passes** (`npx cypress run` + `--component`)
 - [ ] Lint / typecheck / build pass
